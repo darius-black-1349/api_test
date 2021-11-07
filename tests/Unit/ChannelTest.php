@@ -61,4 +61,24 @@ class ChannelTest extends TestCase
         $this->assertEquals('vuejs', $updatedChannel->name);
     }
 
+    public function test_channel_delete_should_be_validated()
+    {
+        $response = $this->json('DELETE', route('channel.delete'));
+
+        $response->assertStatus(422);
+    }
+
+    public function test_delete_channel()
+    {
+        $channel = factory(Channel::class)->create();
+
+        $response = $this->json('DELETE', route('channel.delete'), [
+
+            'id' => $channel->id
+
+        ]);
+
+        $response->assertStatus(200);
+    }
+
 }

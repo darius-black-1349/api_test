@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 
 class UserRepository
 {
-    public function create(Request $request): void
+    public function create(Request $request): User
     {
-        User::create([
+        return User::create([
 
             'name' => $request->name,
             'email' => $request->email,

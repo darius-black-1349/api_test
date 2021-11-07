@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class UserRegisterTest extends TestCase
 {
@@ -12,25 +14,59 @@ class UserRegisterTest extends TestCase
     use RefreshDatabase;
 
 
+    public function registerRoleAndOermissions()
+    {
+        $roleInDatabase = Role::where('name', config('permission.default_roles')[0]);
+
+        if ($roleInDatabase->count() > 1) {
+            foreach (config('permission.default_roles') as $role) {
+
+                Role::create([
+
+                    'name' => $role
+
+                ]);
+            }
+        }
+
+
+        $permissionInDatabase = Permission::where('name', config('permission.default_permissions')[0]);
+
+        if ($permissionInDatabase->count() > 1) {
+            foreach (config('permission.default_permissions') as $permission) {
+
+                Permission::create([
+
+                    'name' => $permission
+
+                ]);
+            }
+        }
+    }
+
+
     //register TESTS
     public function test_register_should_be_validate()
     {
-      $response = $this->postJson(route('auth.register'));
+        $response = $this->postJson(route('auth.register'));
 
-      $response->assertStatus(422);
+        $response->assertStatus(422);
     }
 
     public function test_new_user_can_register()
     {
-      $response = $this->postJson(route('auth.register'), [
 
-        'name' => 'Daius',
-        'email' => 'darius1349@gmail.com',
-        'password' => '123456789',
+        $this->registerRoleAndOermissions();
 
-      ]);
+        $response = $this->postJson(route('auth.register'), [
 
-      $response->assertStatus(201);
+            'name' => 'daius',
+            'email' => 'darius1349@gmail.com',
+            'password' => '123456789',
+
+        ]);
+
+        $response->assertStatus(201);
     }
 
 
@@ -68,7 +104,6 @@ class UserRegisterTest extends TestCase
         $response = $this->actingAs($user)->postJson(route('auth.logout'));
 
         $response->assertStatus(200);
-
     }
 
 

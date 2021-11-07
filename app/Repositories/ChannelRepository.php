@@ -32,4 +32,9 @@ class ChannelRepository
         ]);
     }
 
+    public function delete($id)
+    {
+        Channel::destroy($id);
+    }
+
 }

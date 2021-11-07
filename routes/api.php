@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,32 +15,14 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::prefix('v1')->group(function(){
+Route::prefix('v1')->group(function () {
 
 
-    // AUTH ROUTES
-    Route::prefix('/auth')->group(function(){
+    //Auth Rotes
 
-
-        Route::post('/register', 'Api\v1\Auth\AuthController@register')->name('auth.register');
-        Route::post('/login', 'Api\v1\Auth\AuthController@login')->name('auth.login');
-        Route::post('/logout', 'Api\v1\Auth\AuthController@logout')->name('auth.logout');
-
-        Route::get('/user', 'Api\v1\Auth\AuthController@user')->name('auth.user');
-
-    });
-
+    include __DIR__ . '\v1\auth_routes.php';
 
     // Channel ROUTES
-    Route::prefix('/channel')->group(function(){
-
-
-        Route::get('/all', 'Api\v1\Channel\ChannelController@getAllChannelsList')->name('channel.all');
-        Route::post('/create', 'Api\v1\Channel\ChannelController@createNewChannel')->name('channel.create');
-        Route::put('/update', 'Api\v1\Channel\ChannelController@updateChannel')->name('channel.update');
-
-
-    });
-
+    include __DIR__ . '\v1\channels_routes.php';
 
 });
