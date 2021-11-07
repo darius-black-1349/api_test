@@ -33,4 +33,15 @@ class ThreadRepository
         ]);
     }
 
+    public function update($thread, Request $request)
+    {
+        $thread::update([
+
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'slug' => Str::slug($request->input('title')),
+            'channel_id' => $request->input('channel_id'),
+        ]);
+    }
+
 }
