@@ -16,32 +16,22 @@ class ChannelTest extends TestCase
     use RefreshDatabase;
 
 
-    public function registerRolesAndPemissions()
+    public function registerRolesAndPermissions()
     {
-        $roleInDatabase = Role::where('name', config('permission.default_roles')[0]);
-
-        if ($roleInDatabase->count() > 1) {
+        $roleInDatabase = \Spatie\Permission\Models\Role::where('name', config('permission.default_roles')[0]);
+        if ($roleInDatabase->count() < 1) {
             foreach (config('permission.default_roles') as $role) {
-
-                Role::create([
-
+                \Spatie\Permission\Models\Role::create([
                     'name' => $role
-
                 ]);
             }
         }
 
-        //permissions creating
-
-        $permissionInDatabase = Permission::where('name', config('permission.default_permissions')[0]);
-
-        if ($permissionInDatabase->count() > 1) {
+        $permissionInDatabase = \Spatie\Permission\Models\Permission::where('name', config('permission.default_permissions')[0]);
+        if ($permissionInDatabase->count() < 1) {
             foreach (config('permission.default_permissions') as $permission) {
-
-                Permission::create([
-
+                \Spatie\Permission\Models\Permission::create([
                     'name' => $permission
-
                 ]);
             }
         }
@@ -58,7 +48,7 @@ class ChannelTest extends TestCase
     public function test_channel_should_be_validated()
     {
 
-        $this->registerRolesAndPemissions();
+        $this->registerRolesAndPermissions();
 
         $user = factory(User::class)->create();
 
@@ -74,7 +64,7 @@ class ChannelTest extends TestCase
     public function test_channel_can_be_created()
     {
 
-        $this->registerRolesAndPemissions();
+        $this->registerRolesAndPermissions();
 
         $user = factory(User::class)->create();
         Sanctum::actingAs($user);
@@ -93,7 +83,7 @@ class ChannelTest extends TestCase
 
     public function test_channel_update_should_be_validated()
     {
-        $this->registerRolesAndPemissions();
+        $this->registerRolesAndPermissions();
 
         $user = factory(User::class)->create();
         Sanctum::actingAs($user);
@@ -107,7 +97,7 @@ class ChannelTest extends TestCase
     public function test_channel_update()
     {
 
-        $this->registerRolesAndPemissions();
+        $this->registerRolesAndPermissions();
 
         $user = factory(User::class)->create();
         Sanctum::actingAs($user);
@@ -129,7 +119,7 @@ class ChannelTest extends TestCase
 
     public function test_channel_delete_should_be_validated()
     {
-        $this->registerRolesAndPemissions();
+        $this->registerRolesAndPermissions();
 
         $user = factory(User::class)->create();
         Sanctum::actingAs($user);
@@ -142,7 +132,7 @@ class ChannelTest extends TestCase
 
     public function test_delete_channel()
     {
-        $this->registerRolesAndPemissions();
+        $this->registerRolesAndPermissions();
 
         $user = factory(User::class)->create();
         Sanctum::actingAs($user);
