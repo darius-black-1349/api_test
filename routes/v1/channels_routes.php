@@ -7,7 +7,7 @@ use App\Http\Controllers\Api\v1\Channel\ChannelController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::prefix('/channel')->middleware('can:channel management')->group(function () {
+Route::prefix('/channel')->group(function () {
 
 
     Route::get('/all', [
@@ -16,19 +16,24 @@ Route::prefix('/channel')->middleware('can:channel management')->group(function 
 
     ])->name('channel.all');
 
-    Route::post('/create', [
 
-        ChannelController::class, 'createNewChannel'
 
-    ])->name('channel.create');
-    Route::put('/update', [
+    Route::middleware('can:channel management')->group(function () {
 
-        ChannelController::class, 'updateChannel'
+        Route::post('/create', [
 
-    ])->name('channel.update');
-    Route::delete('/delete', [
+            ChannelController::class, 'createNewChannel'
 
-        ChannelController::class, 'deleteChannel'
+        ])->name('channel.create');
+        Route::put('/update', [
 
-    ])->name('channel.delete');
+            ChannelController::class, 'updateChannel'
+
+        ])->name('channel.update');
+        Route::delete('/delete', [
+
+            ChannelController::class, 'deleteChannel'
+
+        ])->name('channel.delete');
+    });
 });
