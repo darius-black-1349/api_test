@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Channel;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -60,9 +61,12 @@ class ChannelTest extends TestCase
         $this->registerRolesAndPemissions();
 
         $user = factory(User::class)->create();
+
+        Sanctum::actingAs($user);
+
         $user->givePermissionTo('channel management');
 
-        $response = $this->actingAs($user)->postJson(route('channel.create'), []);
+        $response = $this->postJson(route('channel.create'), []);
 
         $response->assertStatus(422);
     }
@@ -73,10 +77,11 @@ class ChannelTest extends TestCase
         $this->registerRolesAndPemissions();
 
         $user = factory(User::class)->create();
+        Sanctum::actingAs($user);
         $user->givePermissionTo('channel management');
 
 
-        $response = $this->actingAs($user)->postJson(route('channel.create'), [
+        $response = $this->postJson(route('channel.create'), [
 
             'name' => 'laravel'
 
@@ -91,9 +96,10 @@ class ChannelTest extends TestCase
         $this->registerRolesAndPemissions();
 
         $user = factory(User::class)->create();
+        Sanctum::actingAs($user);
         $user->givePermissionTo('channel management');
 
-        $response = $this->actingAs($user)->json('PUT', route('channel.update'), []);
+        $response = $this->json('PUT', route('channel.update'), []);
 
         $response->assertStatus(422);
     }
@@ -104,11 +110,12 @@ class ChannelTest extends TestCase
         $this->registerRolesAndPemissions();
 
         $user = factory(User::class)->create();
+        Sanctum::actingAs($user);
         $user->givePermissionTo('channel management');
 
         $channel = factory(Channel::class)->create();
 
-        $response = $this->actingAs($user)->json('PUT', route('channel.update'), [
+        $response = $this->json('PUT', route('channel.update'), [
 
             'id' => $channel->id,
             'name' => 'vuejs'
@@ -125,9 +132,10 @@ class ChannelTest extends TestCase
         $this->registerRolesAndPemissions();
 
         $user = factory(User::class)->create();
+        Sanctum::actingAs($user);
         $user->givePermissionTo('channel management');
 
-        $response = $this->actingAs($user)->json('DELETE', route('channel.delete'));
+        $response = $this->json('DELETE', route('channel.delete'));
 
         $response->assertStatus(422);
     }
@@ -137,11 +145,12 @@ class ChannelTest extends TestCase
         $this->registerRolesAndPemissions();
 
         $user = factory(User::class)->create();
+        Sanctum::actingAs($user);
         $user->givePermissionTo('channel management');
 
         $channel = factory(Channel::class)->create();
 
-        $response = $this->actingAs($user)->json('DELETE', route('channel.delete'), [
+        $response = $this->json('DELETE', route('channel.delete'), [
 
             'id' => $channel->id
 
