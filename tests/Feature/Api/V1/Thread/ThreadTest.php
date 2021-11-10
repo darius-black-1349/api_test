@@ -86,13 +86,16 @@ class ThreadTest extends TestCase
 
         // $this->withoutExceptionHandling();
 
-        Sanctum::actingAs(factory(User::class)->create());
+        $user = factory(User::class)->create();
+
+        Sanctum::actingAs($user);
 
         $thread = factory(Thread::class)->create([
 
             'title' => 'FOO',
             'conten' => 'BAR',
             'channel_id' => factory(Channel::class)->create()->id,
+            'user_id' => $user->id
         ]);
 
         $response = $this->putJson(route('threads.store', [$thread]), [
@@ -113,9 +116,13 @@ class ThreadTest extends TestCase
 
         // $this->withoutExceptionHandling();
 
-        Sanctum::actingAs(factory(User::class)->create());
+        $user = factory(User::class)->create();
 
-        $thread = factory(Thread::class)->create();
+        Sanctum::actingAs($user);
+
+        $thread = factory(Thread::class)->create([
+            'user_id' => $user->id
+        ]);
 
         $response = $this->putJson(route('threads.store', [$thread]), [
 
@@ -132,9 +139,13 @@ class ThreadTest extends TestCase
     public function test_can_delete_thread()
     {
 
-        Sanctum::actingAs(factory(Thread::class)->create());
+        $user = factory(User::class)->create();
 
-        $thread = factory(Thread::class)->create();
+        Sanctum::actingAs($user);
+
+        $thread = factory(Thread::class)->create([
+            'user_id' => $user->id
+        ]);
 
         $response = $this->delete(route('threads.destroy', [$thread->id]));
 
