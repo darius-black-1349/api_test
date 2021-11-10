@@ -46,6 +46,19 @@ class ThreadController extends Controller
 
     public function update(Request $request, Thread $thread)
     {
+        $request->has('best_answer_id')
+
+        ?
+
+        $request->validate([
+
+            'best_answer_id' => ['required']
+
+        ])
+
+
+        :
+
         $request->validate([
 
             'title' => ['required'],
@@ -59,6 +72,18 @@ class ThreadController extends Controller
 
         return response()->json([
             'message' => 'thread updated successfully'
+        ], Response::HTTP_OK);
+    }
+
+    public function destroy($id)
+    {
+
+        resolve(ThreadRepository::class)->destroy($id);
+
+        return response()->json([
+
+            'message' => 'Thread deleted successfully'
+
         ], Response::HTTP_OK);
     }
 

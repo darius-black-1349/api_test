@@ -13,6 +13,8 @@ use Tests\TestCase;
 
 class ThreadTest extends TestCase
 {
+
+    use RefreshDatabase;
     /**
      * A basic feature test example.
      *
@@ -27,6 +29,9 @@ class ThreadTest extends TestCase
 
     public function test_thread_should_be_accessible_by_slug()
     {
+
+        Sanctum::actingAs(factory(Thread::class)->create());
+
         $thread = factory(Thread::class)->create();
 
         $response = $this->get(route('threads.show', [$thread->slug]));
@@ -55,7 +60,7 @@ class ThreadTest extends TestCase
 
         $response = $this->postJson(route('threads.store'), [
             'title' => 'FOO',
-            'conten' => 'BAR',
+            'content' => 'BAR',
             'channel_id' => factory(Channel::class)->create()->id,
         ]);
 
@@ -96,8 +101,42 @@ class ThreadTest extends TestCase
             'channel_id' => factory(Channel::class)->create()->id,
         ]);
 
-        $thread->refresh();
+        $thread->refresh(); // cause to barricade repetetive request to database to get id and refresh database factory details
+
         $this->assertSame('BAR', $thread->title);
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
+    public function test_can_best_answer_id_for_thread()
+    {
+
+        // $this->withoutExceptionHandling();
+
+        Sanctum::actingAs(factory(User::class)->create());
+
+        $thread = factory(Thread::class)->create();
+
+        $response = $this->putJson(route('threads.store', [$thread]), [
+
+            'best_answer_id' => 1,
+        ]);
+
+        $thread->refresh(); // cause to barricade repetetive request to database to get id and refresh database factory details
+
+        $this->assertSame( '1', $thread->best_answer_id);
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
+
+    public function test_can_delete_thread()
+    {
+
+        Sanctum::actingAs(factory(Thread::class)->create());
+
+        $thread = factory(Thread::class)->create();
+
+        $response = $this->delete(route('threads.destroy', [$thread->id]));
 
         $response->assertStatus(Response::HTTP_OK);
     }
