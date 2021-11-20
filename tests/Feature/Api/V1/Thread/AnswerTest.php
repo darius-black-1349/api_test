@@ -135,7 +135,7 @@ class AnswerTest extends TestCase
         ]);
 
 
-        $this->assertFalse(Answer::whereContent($answer->content)->exists());
+        $this->assertFalse(Thread::find($answer->thread_id)->answers()->whereContent($answer->content)->exists());
     }
 
 }
