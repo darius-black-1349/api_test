@@ -25,4 +25,14 @@ class AnswerRepository
         ]);
     }
 
+
+    public function update(Answer $answer, Request $request)
+    {
+        $answer->update([
+
+            'content' => $request->input('content')
+
+        ]);
+    }
+
 }

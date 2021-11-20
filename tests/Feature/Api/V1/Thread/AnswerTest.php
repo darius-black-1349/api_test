@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api\v1\Thread;
 
+use App\Answer;
 use App\Thread;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,6 +27,9 @@ class AnswerTest extends TestCase
         $response->assertStatus(200);
     }
 
+
+
+    // store answers_test
 
     public function test_create_answer_should_be_validate()
     {
@@ -53,6 +57,62 @@ class AnswerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_CREATED);
 
+        $response->assertJson([
+
+            'message' => 'answer submitted successfully'
+
+        ]);
+
         $this->assertTrue($thread->answers()->where('content', 'FOO')->exists());
     }
+
+
+
+    // update answers_test
+
+    public function test_update_answer_should_be_validated()
+    {
+        $user = factory(User::class)->create();
+
+        Sanctum::actingAs($user);
+
+        $answer = factory(Answer::class)->create();
+
+        $response = $this->putJson(route('answers.update'), [$answer], []);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+
+        $response->assertJsonValidationErrors(['content']);
+    }
+
+
+    public function test_update_answer_of_thread()
+    {
+        $user = factory(User::class)->create();
+
+        Sanctum::actingAs($user);
+
+        $answer = factory(Answer::class)->create([
+
+            'content' => 'FOO'
+
+        ]);
+
+        $response = $this->putJson(route('answers.update', [$answer]), [
+
+            'content' => 'BAR',
+        ]);
+
+        $answer->refresh();
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJson([
+
+            'message' => 'answer updated successfully'
+
+        ]);
+
+        $this->assertEquals('BAR', $answer->content);
+    }
+
 }
