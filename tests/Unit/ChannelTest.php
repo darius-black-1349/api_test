@@ -147,5 +147,7 @@ class ChannelTest extends TestCase
         ]);
 
         $response->assertStatus(200);
+
+        $this->assertFalse(Channel::whereId($channel->id)->exists());
     }
 }

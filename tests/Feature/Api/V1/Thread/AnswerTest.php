@@ -94,7 +94,8 @@ class AnswerTest extends TestCase
 
         $answer = factory(Answer::class)->create([
 
-            'content' => 'FOO'
+            'content' => 'FOO',
+            'user_id' => $user->id
 
         ]);
 
@@ -124,7 +125,11 @@ class AnswerTest extends TestCase
 
         $answer = factory(Answer::class)->create();
 
-        $response = $this->delete(route('answers.destroy', [$answer]));
+        $response = $this->delete(route('answers.destroy', [$answer]), [
+
+            'user_id' => $user->id
+
+        ]);
 
         $response->assertStatus(Response::HTTP_OK);
 
