@@ -35,4 +35,9 @@ class AnswerRepository
         ]);
     }
 
+    public function delete(Answer $answer)
+    {
+        $answer->delete();
+    }
+
 }

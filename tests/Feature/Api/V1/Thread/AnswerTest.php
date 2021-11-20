@@ -103,7 +103,6 @@ class AnswerTest extends TestCase
             'content' => 'BAR',
         ]);
 
-        $answer->refresh();
         $response->assertStatus(Response::HTTP_OK);
 
         $response->assertJson([
@@ -112,7 +111,31 @@ class AnswerTest extends TestCase
 
         ]);
 
+        $answer->refresh();
         $this->assertEquals('BAR', $answer->content);
+    }
+
+
+    public function test_delete_answer()
+    {
+        $user = factory(User::class)->create();
+
+        Sanctum::actingAs($user);
+
+        $answer = factory(Answer::class)->create();
+
+        $response = $this->delete(route('answers.destroy', [$answer]));
+
+        $response->assertStatus(Response::HTTP_OK);
+
+        $response->assertJson([
+
+            'message' => 'answer deleted successfully'
+
+        ]);
+
+
+        $this->assertFalse(Answer::whereContent($answer->content)->exists());
     }
 
 }
